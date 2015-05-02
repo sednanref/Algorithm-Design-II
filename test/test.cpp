@@ -22,9 +22,13 @@ void random_solution(){
 	//randomize the seed with the actual time.
 	srand(time(0)); 
 	//randomize the solution.
-	random_shuffle(solution.begin(), solution.end());	
+	random_shuffle(solution.begin(), solution.end());
 }
 
+
+/*
+	Evaluation Function of the problem.
+*/
 int objective_function(){
 	int cost = 0;
 	for (int i = 0; i < n; i++){
@@ -34,6 +38,37 @@ int objective_function(){
 		}
 	}
 	return cost<<1;
+}
+
+/*
+	Procedure that generates a Greedy Solution to the problem.
+
+*/
+void greedy_solution(){
+	vector<int> facilities_total_flow;
+	vector<int> location_total_distances;
+
+	/*Getting the total flow of each facility*/
+	for(int i = 0; i < n; i++){
+		int total_flow = 0;
+		for(int j = 0; j < n; j++){
+			total_flow += flow_matrix[i][j];
+		}
+		facilities_total_flow.push_back(total_flow);
+		cout<<facilities_total_flow[i]<<endl;
+	}
+
+	cout<<"-------------"<<endl;
+	/*Gettin the total distance of each location*/
+	for(int i = 0; i < n; i++){
+		int total_distance = 0;
+		for(int j = 0; j < n; j++){
+			total_distance += distance_matrix[i][j];
+		}
+		location_total_distances.push_back(total_distance);
+		cout<<location_total_distances[i]<<endl;
+	}
+
 }
 
 int main(){
@@ -58,8 +93,8 @@ int main(){
 		}
 	}
 
-	//OUTPUT
-	cout<<n<<endl<<endl;
+	//Printin Matrixes
+/*	cout<<n<<endl<<endl;
 	for(int i = 0; i < n; i++){
 		for(int j = 0; j < n; j++){
 			cout<<flow_matrix[i][j]<<" ";
@@ -73,11 +108,12 @@ int main(){
 		}
 		cout<<endl;
 	}
-
+*/
 	//get a solution
-	random_solution();
-/*	for chr12a.dat
-	solution.clear();
+	//random_solution();
+	greedy_solution();
+//	for chr12a.dat
+/*	solution.clear();
 	solution.push_back(6);
 	solution.push_back(4);
 	solution.push_back(11);
@@ -110,9 +146,10 @@ int main(){
 	solution.push_back(0);	
 */			
 	//output
-	for(int i = 0; i < n; i++){
+	/*for(int i = 0; i < n; i++){
 		cout<<solution[i]+1<<" ";
 	}
 
 	cout<<"    "<<objective_function()<<endl;
+	*/
 }

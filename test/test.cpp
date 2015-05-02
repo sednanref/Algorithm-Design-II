@@ -27,8 +27,14 @@ void random_solution(){
 
 int objective_function(){
 	int cost = 0;
+	cout<<"hola"<<endl;
 	for (int i = 0; i < n; i++){
-		cost = cost + flow_matrix[i][solution[i]] * distance_matrix[i][solution[i]];
+		for (int j = i + 1; j < n; j++){
+			cost = cost + flow_matrix[solution[i]][j] * 
+			distance_matrix[i][j];
+			cout<<i<<" "<<j<<endl;
+		}
+		cout<<"je"<<" "<<cost<<endl;
 	}
 	return cost;
 }
@@ -88,7 +94,7 @@ int main(){
 	solution.push_back(10);
 	solution.push_back(14);
 	solution.push_back(12);
-	solution.push_back(18);
+	solution.push_back(8);
 	solution.push_back(0);
 
 	//output

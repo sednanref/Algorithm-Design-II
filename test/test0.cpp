@@ -43,7 +43,7 @@ int objective_function(){
 /*
 	Function to determine the order of a pair.
 */
-bool pair_is_less(pair <int, int> a, pair <int, int> b){
+bool pair_is_less(pair <int, float> a, pair <int, float> b){
 	return a.second < b.second;
 }
 
@@ -52,16 +52,21 @@ bool pair_is_less(pair <int, int> a, pair <int, int> b){
 	Procedure that generates a Greedy Solution to the problem.
 */
 void greedy_solution(){
-	vector< pair <int, int> > facilities_total_flow;
-	vector< pair <int, int> > location_total_distances;
+	vector< pair <int, float> > facilities_total_flow;
+	vector< pair <int, float> > location_total_distances;
 
 	/*Getting the total flow of each facility*/
 	for(int i = 0; i < n; i++){
-		int total_flow = 0;
+		float total_flow = 0;
+		float count_zero = -1;
 		for(int j = 0; j < n; j++){
 			total_flow += flow_matrix[i][j];
+			if(flow_matrix[i][j] == 0){
+				count_zero++;
+			}
 		}
-		facilities_total_flow.push_back(make_pair(i,total_flow));
+		cout<<count_zero/(n-1)<<endl;
+		facilities_total_flow.push_back(make_pair(i,total_flow*(n-1/count_zero)));
 	}
 
 	sort(facilities_total_flow.begin(), facilities_total_flow.end(), pair_is_less);

@@ -27,16 +27,13 @@ void random_solution(){
 
 int objective_function(){
 	int cost = 0;
-	cout<<"hola"<<endl;
 	for (int i = 0; i < n; i++){
-		for (int j = i + 1; j < n; j++){
-			cost = cost + flow_matrix[solution[i]][j] * 
-			distance_matrix[i][j];
-			cout<<i<<" "<<j<<endl;
+		for (int j = i+1; j < n; j++){
+			cost = cost + flow_matrix[i][j] * 
+			distance_matrix[solution[i]][solution[j]];
 		}
-		cout<<"je"<<" "<<cost<<endl;
 	}
-	return cost;
+	return cost<<1;
 }
 
 int main(){
@@ -78,8 +75,23 @@ int main(){
 	}
 
 	//get a solution
-//	random_solution();
+	random_solution();
+/*	for chr12a.dat
 	solution.clear();
+	solution.push_back(6);
+	solution.push_back(4);
+	solution.push_back(11);
+	solution.push_back(1);
+	solution.push_back(0);
+	solution.push_back(2);
+	solution.push_back(8);
+	solution.push_back(10);
+	solution.push_back(9);
+	solution.push_back(5);
+	solution.push_back(7);
+	solution.push_back(3);
+*/
+/*	for esc16a.
 	solution.push_back(1);
 	solution.push_back(13);
 	solution.push_back(9);
@@ -91,15 +103,15 @@ int main(){
 	solution.push_back(3);
 	solution.push_back(5);
 	solution.push_back(11);
-	solution.push_back(10);
+	solution.push_back(10);	
 	solution.push_back(14);
 	solution.push_back(12);
 	solution.push_back(8);
-	solution.push_back(0);
-
+	solution.push_back(0);	
+*/			
 	//output
 	for(int i = 0; i < n; i++){
-		cout<<solution[i]<<" ";
+		cout<<solution[i]+1<<" ";
 	}
 
 	cout<<"    "<<objective_function()<<endl;

@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-//#include "qap_utils.h"
 using namespace std;
 
 //Size of the problem.

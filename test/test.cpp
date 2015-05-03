@@ -30,12 +30,12 @@ void random_solution(){
 /*
 	Evaluation Function of the problem.
 */
-int objective_function(){
+int evaluation_function(vector <int> sol){
 	int cost = 0;
 	for (int i = 0; i < n; i++){
 		for (int j = i+1; j < n; j++){
 			cost = cost + flow_matrix[i][j] * 
-			distance_matrix[solution[i]][solution[j]];
+			distance_matrix[sol[i]][sol[j]];
 		}
 	}
 	return cost<<1;
@@ -84,10 +84,9 @@ void greedy_solution(){
 		solution[facilities_total_flow[n-i].first] = location_total_distances[i].first;
 	}
 
-
 }
 
-void generate_neighbourhood(){
+void generate_evaluated_neighbourhood(){
 	//Auxiliar neighbour (for rotation)
 	vector <int> aux_solution;
 	//Auxiliar neighbour (for swaping)
@@ -95,53 +94,71 @@ void generate_neighbourhood(){
 	//Auxiliar to make the swap.
 	int aux;
 
+	//Clear the previous neighbourhood. Just in case.
+	neighbourhood.clear();
+
 	//Copy the actual solution to the aux_solution.
 	aux_solution = solution;
-	/*Just testing.*/
-	for(int i = 0; i < n; i++){
-		cout<<aux_solution[i]<<" ";
-	}
-	cout<<endl;
-	cout<<"-------------"<<endl;
-	cout<<"Let's play: "<<endl;
+
 	//Rotation loop
 	for(int i = 0; i < (n - 1); i++){
 		//Copy the aux_solution to generate new neighbours
 		aux_neighbour = aux_solution;
-
-
+		//Swapping loop
 		for(int j = 0; j < n/2; j++){
 			//Swap the value of j with n - j
 			aux = aux_neighbour[j];
 			aux_neighbour[j] = aux_neighbour[(n-1) - j];
 			aux_neighbour[(n - 1) - j] = aux;
 			//Add the swapped solution to the neighbourhood.
-			neighbourhood.push_back(make_pair(aux_neighbour,0));
+			neighbourhood.push_back(make_pair(aux_neighbour,evaluation_function(aux_neighbour)));
 		}
 		//Rotate the aux solution by one.
 		rotate(aux_solution.begin(),aux_solution.begin()+1,aux_solution.end());
 		//Add the rotated solution to the neighbourhood.
-		neighbourhood.push_back(make_pair(aux_solution,0));
+		neighbourhood.push_back(make_pair(aux_solution,evaluation_function(aux_solution)));
 	}
-
+	//Print the neighbourhood, just to test.
+	/*
 	for(int i = 0; i < neighbourhood.size(); i++){
 		vector <int> aux = neighbourhood[i].first;
 		for(int j = 0; j < n; j++){
 			cout<<aux[j]<<" ";
 		}
-		cout<<endl;
+		cout<<" -> "<<neighbourhood[i].second<<endl;
 	}
-
+	*/
 }
 
-void best_first_local_search(){
-
-
+void basic_local_search(){
+	int best_value = evaluation_function(solution);
+	vector < int > best_neighbourhood_solution = solution;
+	int q = 5;
+	while(q--){
+		generate_evaluated_neighbourhood();
+		bool solution_is_changed = false;
+		for(int i = 0; i < neighbourhood.size(); i++){
+			if(neighbourhood[i].second < best_value){
+				solution_is_changed = true;
+				best_neighbourhood_solution = neighbourhood[i].first;
+				best_value = neighbourhood[i].second;
+			}
+		}
+		
+		if(!solution_is_changed) break;
+		solution = best_neighbourhood_solution;
+		for(int i = 0; i < n; i++){
+			cout<<best_neighbourhood_solution[i]<<" ";
+		}
+		cout<<" -> "<<best_value<<endl;
+	}
 }
 
 int main(){
 	//read the size of the problem.
 	cin>>n;
+	
+
 
 	//read the flow matrix
 	flow_matrix.resize(n);
@@ -179,8 +196,8 @@ int main(){
 */
 	//get a solution
 	//random_solution();
-	greedy_solution();
-	generate_neighbourhood();
+	//greedy_solution();
+	
 //	for chr12a.dat
 /*	solution.clear();
 	solution.push_back(6);
@@ -196,7 +213,7 @@ int main(){
 	solution.push_back(7);
 	solution.push_back(3);
 */
-/*	for esc16a.
+//	for esc16a.
 	solution.push_back(1);
 	solution.push_back(13);
 	solution.push_back(9);
@@ -213,12 +230,12 @@ int main(){
 	solution.push_back(12);
 	solution.push_back(8);
 	solution.push_back(0);	
-*/			
-	//output
-	for(int i = 0; i < n; i++){
-		cout<<solution[i]+1<<" ";
-	}
 
-	cout<<"    "<<objective_function()<<endl;
+	
+	cout<<"First Solution: "<<evaluation_function(solution)<<endl;
+	
+	basic_local_search();
 
-	}
+	cout<<"Local search Solution: "<<evaluation_function(solution)<<endl;
+
+}

@@ -92,6 +92,8 @@ void generate_neighbourhood(){
 	vector <int> aux_solution;
 	//Auxiliar neighbour (for swaping)
 	vector <int> aux_neighbour;
+	//Auxiliar to make the swap.
+	int aux;
 
 	//Copy the actual solution to the aux_solution.
 	aux_solution = solution;
@@ -102,25 +104,24 @@ void generate_neighbourhood(){
 	cout<<endl;
 	cout<<"-------------"<<endl;
 	cout<<"Let's play: "<<endl;
-	for(int i = 0; i < n; i++){
+	//Rotation loop
+	for(int i = 0; i < (n - 1); i++){
 		//Copy the aux_solution to generate new neighbours
 		aux_neighbour = aux_solution;
 
 
 		for(int j = 0; j < n/2; j++){
-			//Auxiliar to make the swap.
-			int aux;
 			//Swap the value of j with n - j
 			aux = aux_neighbour[j];
-			aux_neighbour[j] = aux_neighbour[n - j];
-			aux_neighbour[n - j] = aux;
+			aux_neighbour[j] = aux_neighbour[(n-1) - j];
+			aux_neighbour[(n - 1) - j] = aux;
 			//Add the swapped solution to the neighbourhood.
 			neighbourhood.push_back(make_pair(aux_neighbour,0));
 		}
 		//Rotate the aux solution by one.
 		rotate(aux_solution.begin(),aux_solution.begin()+1,aux_solution.end());
 		//Add the rotated solution to the neighbourhood.
-		neighbourhood.push_back(make_pair(aux_neighbour,0));
+		neighbourhood.push_back(make_pair(aux_solution,0));
 	}
 
 	for(int i = 0; i < neighbourhood.size(); i++){

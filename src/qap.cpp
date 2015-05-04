@@ -51,6 +51,18 @@ void random_solution(){
 }
 
 /*
+	Procedure that print the solution introduced by parameter.
+*/
+void print_solution(vector <int> sol){
+	
+	for (int i = 0; i < n; i++){
+		cout<<sol[i]+1<<" ";
+	}
+	cout<<endl;
+
+}
+
+/*
 	Evaluation Function of the problem.
 */
 int evaluation_function(vector <int> sol){
@@ -163,7 +175,7 @@ void basic_local_search(){
 	//Number of iterations as the stop condition.
 	int iterations = 20;
 
-	while(iterations--){
+	for(int k = 1; k <= iterations; k++){
 		//generate a neighbourhood of the actual solution.
 		generate_evaluated_neighbourhood();
 		bool solution_is_changed = false;
@@ -180,21 +192,27 @@ void basic_local_search(){
 		if(!solution_is_changed) break;
 		//Update the actual solution.
 		solution = best_neighbourhood_solution;
+		cout<<"Iteration "<<k<<":"<<endl;
+		print_solution(solution);
+		cout<<evaluation_function(solution)<<endl;
 	}
 }
 
 int main(){
-
+	//read the input
 	read_input();
 	//get a solution
-	random_solution();
-	//greedy_solution();
+	//random_solution();
+	greedy_solution();
 	
-	cout<<"First Solution: "<<evaluation_function(solution)<<endl;
+	cout<<"First Solution: ";
+	print_solution(solution);
+	cout<<evaluation_function(solution)<<endl;
 	
 	//Do the local search.
 	basic_local_search();
-
-	cout<<"Local search Solution: "<<evaluation_function(solution)<<endl;
+	cout<<"Local search Solution: ";
+	print_solution(solution);
+	cout<<evaluation_function(solution)<<endl;
 
 }

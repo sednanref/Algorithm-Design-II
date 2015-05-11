@@ -6,11 +6,11 @@ int n;
 //Vector with a Solution for the problem.
 vector<int> solution;
 //Matrix with the flow of the problem.
-vector< vector <int> > flow_matrix;
+vector< vector <long long int> > flow_matrix;
 //Matrix with the distance of the problem.
-vector< vector <int> > distance_matrix;
+vector< vector <long long int> > distance_matrix;
 //Vector with the neighbourhood and their evaluation.
-vector< pair < vector <int> , int > > neighbourhood;
+vector< pair < vector <int> , long long int > > neighbourhood;
 
 /*
 	Procedure that reads the input.
@@ -65,8 +65,8 @@ void print_solution(vector <int> sol){
 /*
 	Evaluation Function of the problem.
 */
-int evaluation_function(vector <int> sol){
-	int cost = 0;
+long long int evaluation_function(vector <int> sol){
+	long long int cost = 0;
 	for (int i = 0; i < n; i++){
 		for (int j = i+1; j < n; j++){
 			cost = cost + flow_matrix[i][j] * 
@@ -88,13 +88,13 @@ bool pair_is_less(pair <int, int> a, pair <int, int> b){
 */
 void greedy_solution(){
 	//Vector with the facilities and their total flow.
-	vector< pair <int, int> > facilities_total_flow;
+	vector< pair <int, long long int> > facilities_total_flow;
 	//Vector with the locations and their total distance.
-	vector< pair <int, int> > location_total_distances;
+	vector< pair <int, long long int> > location_total_distances;
 
 	//Getting the total flow of each facility
 	for(int i = 0; i < n; i++){
-		int total_flow = 0;
+		long long int total_flow = 0;
 		for(int j = 0; j < n; j++){
 			total_flow += flow_matrix[i][j];
 		}
@@ -106,7 +106,7 @@ void greedy_solution(){
 
 	//Getting the total distance of each location
 	for(int i = 0; i < n; i++){
-		int total_distance = 0;
+		long long int total_distance = 0;
 		for(int j = 0; j < n; j++){
 			total_distance += distance_matrix[i][j];
 		}
@@ -115,11 +115,11 @@ void greedy_solution(){
 
 	//Sort the locations by their total distance.
 	sort(location_total_distances.begin(), location_total_distances.end(), pair_is_less);
-
+	
 	//Building the solution
 	solution.resize(n);
 	for(int i = 0; i < n; i++){
-		solution[facilities_total_flow[n-i].first] = location_total_distances[i].first;
+		solution[facilities_total_flow[n-1-i].first] = location_total_distances[i].first;
 	}
 }
 
@@ -160,6 +160,7 @@ void generate_evaluated_neighbourhood(){
 		//Add the rotated solution to the neighbourhood.
 		neighbourhood.push_back(make_pair(aux_solution,evaluation_function(aux_solution)));
 	}
+
 }
 
 /*
@@ -168,7 +169,7 @@ void generate_evaluated_neighbourhood(){
 void basic_local_search(){
 	//best value in the local search, 
 	//initialized with the value of the initial solution
-	int best_value = evaluation_function(solution);
+	long long int best_value = evaluation_function(solution);
 	//Best solution of the neighbourhood of the actual solution,
 	//initialized with the initial solution.
 	vector <int> best_neighbourhood_solution = solution;

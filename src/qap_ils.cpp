@@ -196,9 +196,9 @@ void basic_local_search(){
 		if(!solution_is_changed) break;
 		//Update the actual solution.
 		solution = best_neighbourhood_solution;
-		cout<<"Iteration "<<k<<":"<<endl;
-		print_solution(solution);
-		cout<<evaluation_function(solution)<<endl;
+		//cout<<"Iteration "<<k<<":"<<endl;
+		/*print_solution(solution);
+		cout<<evaluation_function(solution)<<endl;*/
 	}
 }
 
@@ -206,16 +206,27 @@ void basic_local_search(){
 	Iterated local search.
 */
 void iterated_local_search(){
-	int iterations = 200; //number of iterations.
+	int iterations = 20000; //number of iterations.
 	best_solution = solution;
+	int max_unchanged_iterations = 2000; //number of maximun unchanged iterations
 	for(int i = 0; i < iterations; i++){
-		cout<<"  Iteration "<<i + 1<<":"<<endl;
+		//reduce the number of unchanged iterations
+		max_unchanged_iterations--;
+		//if the program has run the number maximum of unchanged iterations
+		//keep the best solution obtained so far.
+		if(max_unchanged_iterations == 0){
+			break;
+		}
+		//cout<<"  Iteration "<<i + 1<<":"<<endl;
 		//perturbate the last solution.
 		random_solution();
 		//execute a local search.
 		basic_local_search();
-		//if the last achieved solution is better, change it.
+		//if the last achieved solution is better...
 		if(evaluation_function(solution) < evaluation_function(best_solution)){
+			//restart the max_unchanged_iterations
+			max_unchanged_iterations = 2000;
+			//obtain the new best solution.
 			best_solution = solution;
 		}
 		
@@ -230,20 +241,20 @@ int main(){
 	//random_solution();
 	greedy_solution();
 	
-	cout<<"First Solution: ";
-	print_solution(solution);
-	cout<<evaluation_function(solution)<<endl;
+	//cout<<"First Solution: ";
+	//print_solution(solution);
+	//cout<<evaluation_function(solution)<<endl;
 	
 	//Do the local search.
 	basic_local_search();
-	cout<<"Local search Solution: ";
-	print_solution(solution);
-	cout<<evaluation_function(solution)<<endl;
+	//cout<<"Local search Solution: ";
+	//print_solution(solution);
+	//cout<<evaluation_function(solution)<<endl;
 
-	cout<<"Iterated Local Search: "<<endl;
+	//cout<<"Iterated Local Search: "<<endl;
 	iterated_local_search();
 
-	cout<<"Best Solution Achieved: "<<endl;
-	print_solution(best_solution);
+	//cout<<"Best Solution Achieved: "<<endl;
+	//print_solution(best_solution);
 	cout<<evaluation_function(best_solution)<<endl;
 }

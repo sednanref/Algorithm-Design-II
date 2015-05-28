@@ -90,6 +90,13 @@ long long int evaluation_function(vector <int> sol){
 bool pair_is_less(pair <int, int> a, pair <int, int> b){
 	return a.second < b.second;
 }
+/*
+	solution_is_better, compair two solutions by their evaluation function.
+*/
+bool solution_is_better(pair< vector < int> , long long int> a,
+						pair< vector < int> , long long int> b){
+	return a.second < b.second;
+}
 
 /*
 	Procedure that generates a Greedy Solution to the problem.
@@ -144,13 +151,17 @@ void generate_evaluated_neighbourhood(vector <int> solution){
 	//clear the movements set and list.
 	movements_set.clear();
 	movements_list.clear();
+	//auxiliar solution to generate the neighbourhood.
+	vector <int> aux_solution;
+	//number of neighbours to generate.
+	int neighbours_num = n*n*n;
 	//neighbourhood generation loop.
-	for (int i=0; i < n*n*n; i++ ){
+	for (int i=0; i < neighbours_num; i++ ){
 		//generate to random values (to swap)
-		a = (rand() % n) + 1;
-		b = (rand() % n) + 1;
+		a = rand() % n;
+		b = rand() % n;
 		//while b == a, generate another value for b.
-		while (b == a) b = (rand() % n) + 1;
+		while (b == a) b = rand() % n;
 		//making the movement pair.
 		pair <int, int> aux_pair = make_pair(a,b);
 		//making the reverse pair, to avoid reversed pairs in the movements.
@@ -160,7 +171,20 @@ void generate_evaluated_neighbourhood(vector <int> solution){
 		   movements_set.find(rev_aux_pair) != movements_set.end()){
 		   	continue;	//go to look another movement.
 		}else{ //if it is not already... 
-			continue;
+			//insert the movements in the movements_set and movements_list
+	
+			movements_set.insert(aux_pair);
+			movements_list.push_back(aux_pair);
+			//generate the auxiliar solution
+			aux_solution = solution;
+			//save the value in aux_solution[a]
+			int aux = aux_solution[a];
+			//swap the values in aux_solution
+			aux_solution[a] = aux_solution[b];
+			aux_solution[b] = aux;
+			//save this solution into the neighbourhood (with its evaluation)
+			neighbourhood.push_back(make_pair(aux_solution, evaluation_function(aux_solution)));
+
 		}
 
 	}
@@ -174,6 +198,8 @@ void generate_evaluated_neighbourhood(vector <int> solution){
 	the movement at least it aprove the acceptation criteria.
 */
 void tabu_search(){
+	//index of the best value in the neighbourhood.
+	int best_index = -1;
 	//best value in the local search, 
 	//initialized with the value of the initial solution
 	long long int best_value = evaluation_function(solution);
@@ -181,28 +207,43 @@ void tabu_search(){
 	//initialized with the initial solution.
 	vector <int> best_neighbourhood_solution = solution;
 	//Number of iterations as the stop condition.
-	int iterations = 20;
+	int iterations = 1;
+	
 
 	for(int k = 1; k <= iterations; k++){
 		//generate a neighbourhood of the actual solution.
 		generate_evaluated_neighbourhood(solution);
-		bool solution_is_changed = false;
+		
+		//explore the neighbourhood
+		for(int j = 0; j < neighbourhood.size(); j++){
+			if(neighbourhood[j].second < best_value){
+				best_neighbourhood_solution = neighbourhood[j].first;
+				best_value = neighbourhood[j].second;
+				best_index = j;
+			}
+		}
+		if(best_index!=-1){
+			print_solution(solution);
+			cout<<movements_list[best_index].first<<" "<<movements_list[best_index].second<<endl;
+			print_solution(best_neighbourhood_solution);
+		}
+
+
 		//Loof for the best solution in the neighbourhood.
-		for(int i = 0; i < neighbourhood.size(); i++){
-			//
+		/*for(int i = 0; i < neighbourhood.size(); i++){
+			
 			if(neighbourhood[i].second < best_value){
-				solution_is_changed = true;
 				best_neighbourhood_solution = neighbourhood[i].first;
 				best_value = neighbourhood[i].second;
 			}
 		}
-		//If it doesn't find a better solution, quit the local search.
-		if(!solution_is_changed) break;
+	
 		//Update the actual solution.
 		solution = best_neighbourhood_solution;
 		//cout<<"Iteration "<<k<<":"<<endl;
-		/*print_solution(solution);
-		cout<<evaluation_function(solution)<<endl;*/
+		print_solution(solution);
+		cout<<evaluation_function(solution)<<endl;
+		*/
 	}
 }
 
@@ -213,8 +254,8 @@ int main(){
 	//get a solution
 	//randomize the seed with the actual time.
 	srand(time(0));
-	//random_solution();
-	greedy_solution();
+	random_solution();
+	//greedy_solution();
 	
 	//cout<<"First Solution: ";
 	//print_solution(solution);
@@ -229,5 +270,5 @@ int main(){
 	
 	//cout<<"Best Solution Achieved: "<<endl;
 	//print_solution(best_solution);
-	cout<<evaluation_function(best_solution)<<endl;
+	//cout<<evaluation_function(best_solution)<<endl;
 }

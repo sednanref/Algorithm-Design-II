@@ -145,7 +145,6 @@ void greedy_solution(){
 	is saved in the movements list.
 */
 void generate_evaluated_neighbourhood(vector <int> solution){
-	int a, b; //auxiliar values to make the swap.
 	//clear the neighbourhood.
 	neighbourhood.clear();
 	//clear the movements set and list.
@@ -154,39 +153,26 @@ void generate_evaluated_neighbourhood(vector <int> solution){
 	//auxiliar solution to generate the neighbourhood.
 	vector <int> aux_solution;
 	//number of neighbours to generate.
-	int neighbours_num = n*n*n;
-	//neighbourhood generation loop.
-	for (int i=0; i < neighbours_num; i++ ){
-		//generate to random values (to swap)
-		a = rand() % n;
-		b = rand() % n;
-		//while b == a, generate another value for b.
-		while (b == a) b = rand() % n;
-		//making the movement pair.
-		pair <int, int> aux_pair = make_pair(a,b);
-		//making the reverse pair, to avoid reversed pairs in the movements.
-		pair <int, int> rev_aux_pair = make_pair(b,a);
-		//if the pair is already in the movement set...
-		if(movements_set.find(aux_pair) != movements_set.end() ||
-		   movements_set.find(rev_aux_pair) != movements_set.end()){
-		   	continue;	//go to look another movement.
-		}else{ //if it is not already... 
-			//insert the movements in the movements_set and movements_list
+	int neighbours_num = n*(n-1)/2;
 	
+	//neighbourhood generation loop.
+	for (int i=0; i < n - 1; i++ ){
+		for(int j = i+1; j < n; j++){
+			//making the movement pair.
+			pair <int, int> aux_pair = make_pair(i, j);
+			//insert the movements in the movements_set and movements_list
 			movements_set.insert(aux_pair);
 			movements_list.push_back(aux_pair);
 			//generate the auxiliar solution
 			aux_solution = solution;
 			//save the value in aux_solution[a]
-			int aux = aux_solution[a];
+			int aux = aux_solution[i];
 			//swap the values in aux_solution
-			aux_solution[a] = aux_solution[b];
-			aux_solution[b] = aux;
+			aux_solution[i] = aux_solution[j];
+			aux_solution[j] = aux;
 			//save this solution into the neighbourhood (with its evaluation)
 			neighbourhood.push_back(make_pair(aux_solution, evaluation_function(aux_solution)));
-
 		}
-
 	}
 
 }

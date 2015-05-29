@@ -193,7 +193,9 @@ void tabu_search(){
 	//initialized with the initial solution.
 	vector <int> best_neighbourhood_solution = solution;
 	//Number of iterations as the stop condition.
-	int iterations = 1;
+	int iterations = 2;
+	//queue for the tabu list.
+	queue < pair <int, int>> tabu_list;
 	
 
 	for(int k = 1; k <= iterations; k++){
@@ -208,10 +210,14 @@ void tabu_search(){
 				best_index = j;
 			}
 		}
+
+
+		//si encontró una solución mejor...
 		if(best_index!=-1){
-			print_solution(solution);
-			cout<<movements_list[best_index].first<<" "<<movements_list[best_index].second<<endl;
-			print_solution(best_neighbourhood_solution);
+			if(tabu_list.size() == n){
+				tabu_list.pop_front();
+				tabu_list.push_back(movements_list[j]);
+			}
 		}
 
 

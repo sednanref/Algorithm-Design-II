@@ -16,7 +16,6 @@ vector< pair < vector <int> , long long int > > neighbourhood;
 //Tabu List Size
 int tl_size;
 //movements done to generate the neighbourhood.
-set < pair <int, int> > movements_set;
 vector < pair <int, int> > movements_list;
 
 
@@ -139,6 +138,18 @@ void greedy_solution(){
 }
 
 /*
+	Procedure that generate the movement list just once.
+*/
+void generate_movement_list(){
+	for (int i=0; i < n - 1; i++ ){
+		for(int j = i+1; j < n; j++){
+			//insert the movements in the movements_list
+			movements_list.push_back(make_pair(i, j));
+		}
+	}
+}
+
+/*
 	Procedure that generates the neighbourhood of the actual solution,
 	it also evaluate each neighbour solution and save it in the 
 	neighbourhood vector. Every movement done to generate a new solution
@@ -147,32 +158,23 @@ void greedy_solution(){
 void generate_evaluated_neighbourhood(vector <int> solution){
 	//clear the neighbourhood.
 	neighbourhood.clear();
-	//clear the movements set and list.
-	movements_set.clear();
-	movements_list.clear();
 	//auxiliar solution to generate the neighbourhood.
 	vector <int> aux_solution;
-	//number of neighbours to generate.
-	int neighbours_num = n*(n-1)/2;
+	
 	
 	//neighbourhood generation loop.
-	for (int i=0; i < n - 1; i++ ){
-		for(int j = i+1; j < n; j++){
-			//making the movement pair.
-			pair <int, int> aux_pair = make_pair(i, j);
-			//insert the movements in the movements_set and movements_list
-			movements_set.insert(aux_pair);
-			movements_list.push_back(aux_pair);
-			//generate the auxiliar solution
-			aux_solution = solution;
-			//save the value in aux_solution[a]
-			int aux = aux_solution[i];
-			//swap the values in aux_solution
-			aux_solution[i] = aux_solution[j];
-			aux_solution[j] = aux;
-			//save this solution into the neighbourhood (with its evaluation)
-			neighbourhood.push_back(make_pair(aux_solution, evaluation_function(aux_solution)));
-		}
+	for (int i=0; i < movements_list.size(); i++ ){
+		pair <int, int > aux_pair = movements_list[i];
+		//generate the auxiliar solution
+		aux_solution = solution;
+		//save the value in aux_solution[a]
+		int aux = aux_solution[aux_pair.first];
+		//swap the values in aux_solution
+		aux_solution[aux_pair.first] = aux_solution[aux_pair.second];
+		aux_solution[aux_pair.second] = aux;
+		//save this solution into the neighbourhood (with its evaluation)
+		neighbourhood.push_back(make_pair(aux_solution, evaluation_function(aux_solution)));
+		
 	}
 
 }
@@ -184,39 +186,85 @@ void generate_evaluated_neighbourhood(vector <int> solution){
 	the movement at least it aprove the acceptation criteria.
 */
 void tabu_search(){
-	//index of the best value in the neighbourhood.
-	int best_index = -1;
 	//best value in the local search, 
 	//initialized with the value of the initial solution
 	long long int best_value = evaluation_function(solution);
-	//Best solution of the neighbourhood of the actual solution,
-	//initialized with the initial solution.
-	vector <int> best_neighbourhood_solution = solution;
 	//Number of iterations as the stop condition.
 	int iterations = 2;
-	//queue for the tabu list.
-	queue < pair <int, int>> tabu_list;
+	//set for the tabu list.
+	set < pair <int, int> > tabu_set;
+	//set of the tabu list.
+	queue < pair <int, int> > tabu_list;
+
 	
 
 	for(int k = 1; k <= iterations; k++){
 		//generate a neighbourhood of the actual solution.
 		generate_evaluated_neighbourhood(solution);
-		
+		//index of the best value in the neighbourhood.
+		int best_index = 0;
+		//best value of the neighbourhood.
+		vector <int> best_neighbourhood_solution = neighbourhood[0].first;
+		//best value of the neighbourhood.
+		int best_neighbourhood_value = neighbourhood[0].second;
+		//value to see if a better solution than the best is achieved.
+		bool exists_a_better = false;
 		//explore the neighbourhood
-		for(int j = 0; j < neighbourhood.size(); j++){
+		for(int j = 1; j < movements_list.size(); j++){
+			//if the solution has a better value than the best solution
 			if(neighbourhood[j].second < best_value){
-				best_neighbourhood_solution = neighbourhood[j].first;
+				//change the actual solution, it doesn't matter if it is
+				//in the tabu list or not.
+				solution = neighbourhood[j].first;
 				best_value = neighbourhood[j].second;
-				best_index = j;
+				exists_a_better = true;
+			//try to find if it is the better of the neighbourhood.
+			}else if(neighbourhood[j].second < best_neighbourhood_value){
+				//if the movement is not in the tabu list...
+				if(tabu_set.find(movements_list[j]) == tabu_set.end()){
+					//take that solution as the best in the neighbourhood.
+					best_neighbourhood_solution = neighbourhood[j].first;
+					best_neighbourhood_value = neighbourhood[j].second;
+					//add it to the tabu set and list.
+					tabu_set.insert(movements_list[j]);
+					tabu_list.push(movements_list[j]);
+					//if the tabu list has achieved its maximun size
+					if(tabu_list.size()>=n){
+						//take the first element from the list, 
+						//(to remove it later from the set)
+						pair<int,int> aux_movement = tabu_list.front();
+						//remove that element from the list.
+						tabu_list.pop();
+						//remove that element from the set.
+						tabu_set.erase(tabu_set.find(aux_movement));
+
+					}
+				//if the movement is in the tabu list, don't do it!
+				}else{
+					continue;
+				}
 			}
 		}
+		for(int p = 0; p < tabu_list.size(); p++){
+			pair <int, int> aux_pair = tabu_list.front();
+			tabu_list.pop();
+			cout<<aux_pair.first<<" "<<aux_pair.second<<endl;
+		}
 
+		//if a better solution was encountered, jump to the start of the loop.
+		if(exists_a_better){
+			continue;
+		}
+
+		print_solution(solution);
+		cout<<movements_list[best_index].first<<" "<<movements_list[best_index].second<<endl;
+		print_solution(neighbourhood[best_index].first);
 
 		//si encontró una solución mejor...
 		if(best_index!=-1){
 			if(tabu_list.size() == n){
-				tabu_list.pop_front();
-				tabu_list.push_back(movements_list[j]);
+				tabu_list.pop();
+				tabu_list.push(movements_list[best_index]);
 			}
 		}
 
@@ -252,7 +300,8 @@ int main(){
 	//cout<<"First Solution: ";
 	//print_solution(solution);
 	//cout<<evaluation_function(solution)<<endl;
-	
+	//generate the movement list.
+	generate_movement_list();
 	//Do the local search.
 	tabu_search();
 	//cout<<"Local search Solution: ";

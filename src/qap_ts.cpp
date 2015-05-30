@@ -194,7 +194,7 @@ void tabu_search(){
 	//best solution achieved at the moment, initialized with the first one.
 	best_solution = solution;
 	//Number of iterations as the stop condition.
-	int iterations = 20;
+	int iterations = 2000;
 	//set for the tabu list.
 	set < pair <int, int> > tabu_set;
 	//set of the tabu list.

@@ -216,3 +216,80 @@ abline(h=nug28_opt, col="red")
 #nug30
 boxplot(ils_nug30, ts_nug30, main=toupper("Nug30"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug30_opt, col="green")
+
+#SUMMARIES
+#nug12
+print("Summary de nug12 con ILS")
+print(summary(ils_nug12))
+print("Summary de nug12 con TS")
+print(summary(ts_nug12))
+#nug14
+print("Summary de nug14 con ILS")
+print(summary(ils_nug14))
+print("Summary de nug14 con TS")
+print(summary(ts_nug14))
+#nug15
+print("Summary de nug15 con ILS")
+print(summary(ils_nug15))
+print("Summary de nug15 con TS")
+print(summary(ts_nug15))
+#nug16a
+print("Summary de nug16a con ILS")
+print(summary(ils_nug16a))
+print("Summary de nug16a con TS")
+print(summary(ts_nug16a))
+#nug16b
+print("Summary de nug16b con ILS")
+print(summary(ils_nug16b))
+print("Summary de nug16b con TS")
+print(summary(ts_nug16b))
+#nug17
+print("Summary de nug17 con ILS")
+print(summary(ils_nug17))
+print("Summary de nug17 con TS")
+print(summary(ts_nug17))
+#nug18
+print("Summary de nug18 con ILS")
+print(summary(ils_nug18))
+print("Summary de nug18 con TS")
+print(summary(ts_nug18))
+#nug20
+print("Summary de nug20 con ILS")
+print(summary(ils_nug20))
+print("Summary de nug20 con TS")
+print(summary(ts_nug20))
+#nug21
+print("Summary de nug21 con ILS")
+print(summary(ils_nug21))
+print("Summary de nug21 con TS")
+print(summary(ts_nug21))
+#nug22
+print("Summary de nug22 con ILS")
+print(summary(ils_nug22))
+print("Summary de nug22 con TS")
+print(summary(ts_nug22))
+#nug24
+print("Summary de nug24 con ILS")
+print(summary(ils_nug24))
+print("Summary de nug24 con TS")
+print(summary(ts_nug24))
+#nug25
+print("Summary de nug25 con ILS")
+print(summary(ils_nug25))
+print("Summary de nug25 con TS")
+print(summary(ts_nug25))
+#nug27
+print("Summary de nug27 con ILS")
+print(summary(ils_nug27))
+print("Summary de nug27 con TS")
+print(summary(ts_nug27))
+#nug28
+print("Summary de nug28 con ILS")
+print(summary(ils_nug28))
+print("Summary de nug28 con TS")
+print(summary(ts_nug28))
+#nug30
+print("Summary de nug30 con ILS")
+print(summary(ils_nug30))
+print("Summary de nug30 con TS")
+print(summary(ts_nug30))

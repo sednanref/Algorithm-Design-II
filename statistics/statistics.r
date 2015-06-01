@@ -172,50 +172,80 @@ print((mean(ts_nug30) - nug30_opt)/nug30_opt)
 
 #BOXPLOTS
 #nug12
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug12.png")
 boxplot(ils_nug12, ts_nug12, main=toupper("Nug12"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug12_opt, col="red")
+dev.off()
 #nug14
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug14.png")
 boxplot(ils_nug14, ts_nug14, main=toupper("Nug14"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug14_opt, col="red")
+dev.off()
 #nug15
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug15.png")
 boxplot(ils_nug15, ts_nug15, main=toupper("Nug15"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug15_opt, col="red")
+dev.off()
 #nug16a
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug16a.png")
 boxplot(ils_nug16a, ts_nug16a, main=toupper("Nug16a"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug16a_opt, col="red")
+dev.off()
 #nug16b
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug16b.png")
 boxplot(ils_nug16b, ts_nug16b, main=toupper("Nug16b"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug16b_opt, col="red")
+dev.off()
 #nug17
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug17.png")
 boxplot(ils_nug17, ts_nug17, main=toupper("Nug17"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug17_opt, col="red")
+dev.off()
 #nug18
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug18.png")
 boxplot(ils_nug18, ts_nug18, main=toupper("Nug18"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug18_opt, col="red")
+dev.off()
 #nug20
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug20.png")
 boxplot(ils_nug20, ts_nug20, main=toupper("Nug20"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug20_opt, col="red")
+dev.off()
 #nug21
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug21.png")
 boxplot(ils_nug21, ts_nug21, main=toupper("Nug21"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug21_opt, col="red")
+dev.off()
 #nug22
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug22.png")
 boxplot(ils_nug22, ts_nug22, main=toupper("Nug22"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug22_opt, col="red")
+dev.off()
 #nug24
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug24.png")
 boxplot(ils_nug24, ts_nug24, main=toupper("Nug24"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug24_opt, col="red")
+dev.off()
 #nug25
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug25.png")
 boxplot(ils_nug25, ts_nug25, main=toupper("Nug25"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug25_opt, col="red")
+dev.off()
 #nug27
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug27.png")
 boxplot(ils_nug27, ts_nug27, main=toupper("Nug27"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug27_opt, col="red")
+dev.off()
 #nug28
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug28.png")
 boxplot(ils_nug28, ts_nug28, main=toupper("Nug28"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
 abline(h=nug28_opt, col="red")
+dev.off()
 #nug30
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/boxplots/nug30.png")
 boxplot(ils_nug30, ts_nug30, main=toupper("Nug30"), ylab="Solution Value", xlab="Metaheuristic", names=c("Iterated Local Search", "Tabu Search"))
-abline(h=nug30_opt, col="green")
+abline(h=nug30_opt, col="red")
+dev.off()
 
 #SUMMARIES
 #nug12

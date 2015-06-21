@@ -158,7 +158,7 @@ pair <vector <int>, long long int> tabu_search(vector<int> solution){
 	//best solution in this function, initialized with the first one.
 	vector <int> best_solution = solution;
 	//Number of iterations as the stop condition.
-	int iterations = 2000;
+	int iterations = 200;
 	//set for the tabu list.
 	set < pair <int, int> > tabu_set;
 	//set of the tabu list.
@@ -329,9 +329,17 @@ void build_reference_set(int size){
 	sort(population.begin(), population.end(), solution_is_better);
 	//add the best solutions to the reference set.
 	for(int i = 0; i < size; i++){
-		reference_set_vector[i] = population[i];
-		reference_set.insert(population[i].first);
+		pair <vector <int>, long long int> solution = tabu_search(population[i].first);
+		//if it is the best solution, save it
+		if(solution.second < best_value){
+			best_solution = solution.first;
+			best_value = solution.second;
+		}
+		reference_set_vector[i] = solution;
+		reference_set.insert(solution.first);
 	}
+
+
 }
 
 /*
@@ -438,19 +446,36 @@ void scatter_search(){
 				reference_set.erase(reference_set.find(reference_set_vector[reference_set_vector.size() - 1].first));
 				//add the child1 to the reference set and to the reference set vector
 				reference_set.insert(childs.first);
-				reference_set_vector[i] = make_pair(childs.first, childs_values.first);
+				reference_set_vector[reference_set_vector.size() -1] = make_pair(childs.first, childs_values.first);
 				//if it is also the best solution... save it
 				if(childs_values.first < best_value){
 					best_solution = childs.first;
 					best_value = childs_values.first;
 				}
+				//sort the reference set 
+				sort(reference_set_vector.begin(), reference_set_vector.end(), solution_is_better);
+				//there is a new solution in ref set
+				new_solutions = true;
 			}
-
-			/*cout<<"----------"<<endl;
-			print_solution(subsets[i].first.first);
-			print_solution(subsets[i].second.first);
-			print_solution(childs.first);
-			print_solution(childs.second);*/
+			//look if the child2 could be part on reference set, if so
+			//add it 
+			if(reference_set.find(childs.second) == reference_set.end() &&
+				childs_values.second < worst_ref_set_value){
+				//remove the worst solution in reference set
+				reference_set.erase(reference_set.find(reference_set_vector[reference_set_vector.size() - 1].first));
+				//add the child1 to the reference set and to the reference set vector
+				reference_set.insert(childs.second);
+				reference_set_vector[reference_set_vector.size() -1] = make_pair(childs.second, childs_values.second);
+				//if it is also the best solution... save it
+				if(childs_values.second < best_value){
+					best_solution = childs.second;
+					best_value = childs_values.second;
+				}
+				//sort the reference set 
+				sort(reference_set_vector.begin(), reference_set_vector.end(), solution_is_better);
+				//there is a new solution in ref set
+				new_solutions = true;
+			}
 		}
 
 	}
@@ -465,16 +490,14 @@ int main(){
 	read_input();
 	//randomize the seed with the actual time.
 	srand(time(0));
+	//generate the movement list (for the tabu searchs)
+	generate_movement_list();
 	//build the initial population
 	build_initial_population(1);
 	//generate the reference set
 	build_reference_set(n/2);
 	//Do the scatter search
 	scatter_search();
-	//generate the movement list.
-	//generate_movement_list();
-	//Do the tabu search.
-	//tabu_search();
 	//output
 	cout<<best_value<<endl;
 }

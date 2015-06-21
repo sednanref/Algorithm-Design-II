@@ -1,13 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int minuto,sec,micr,total,flag;
+int minuto,sec,micr,flag;
 string minutes,seconds,micro,aux;
 
 
 void read_input(){
 
 	cin>>aux;
+
 
 	flag = 0;
 	for (int i = 0; i < aux.length(); ++i)
@@ -32,8 +33,6 @@ void read_input(){
 
 	sec = (atoi(minutes.c_str()) * 60) + (atoi(seconds.c_str()));
 
-
-	// 
 	stringstream convert; //stringstream used for the conversion
 
 	convert << sec; //add the value of Number to the characters in the stream
@@ -46,6 +45,19 @@ void read_input(){
 
 int main(){
 
-	read_input();
+	for (int i = 0; i < 30; ++i)
+	{
+		minutes = "";
+		seconds	= "";
+		micro 	= "";
+		aux		= "";
+
+		minuto	= 0;
+		sec 	= 0;
+		micr 	= 0;
+		flag	= 0;
+		read_input();
+	}
+
 	return 0;
 }

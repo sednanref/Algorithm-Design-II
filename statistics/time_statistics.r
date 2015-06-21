@@ -90,15 +90,7 @@ ga_nug22_dat = read.table("/home/lfernandes/Algorithm-Design-II/results/ga/nug22
 ga_nug22 = ga_nug22_dat[,1]
 ss_nug22_dat = read.table("/home/lfernandes/Algorithm-Design-II/results/ss/nug22.hola")
 ss_nug22 = ss_nug22_dat[,1]
-#nug24
-ils_nug24_dat = read.table("/home/lfernandes/Algorithm-Design-II/results/ils/nug24.hola")
-ils_nug24 = ils_nug24_dat[,1]
-ts_nug24_dat = read.table("/home/lfernandes/Algorithm-Design-II/results/ts/nug24.hola")
-ts_nug24 = ts_nug24_dat[,1]
-ga_nug24_dat = read.table("/home/lfernandes/Algorithm-Design-II/results/ga/nug24.hola")
-ga_nug24 = ga_nug24_dat[,1]
-ss_nug24_dat = read.table("/home/lfernandes/Algorithm-Design-II/results/ss/nug24.hola")
-ss_nug24 = ss_nug24_dat[,1]
+
 #nug25
 ils_nug25_dat = read.table("/home/lfernandes/Algorithm-Design-II/results/ils/nug25.hola")
 ils_nug25 = ils_nug25_dat[,1]
@@ -135,3 +127,62 @@ ga_nug30_dat = read.table("/home/lfernandes/Algorithm-Design-II/results/ga/nug30
 ga_nug30 = ga_nug30_dat[,1]
 ss_nug30_dat = read.table("/home/lfernandes/Algorithm-Design-II/results/ss/nug30.hola")
 ss_nug30 = ss_nug30_dat[,1]
+
+
+#BOXPLOTS
+#nug12
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug12.png")
+boxplot(ils_nug12, ts_nug12, ga_nug12, ss_nug12, main=toupper("Nug12"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug14
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug14.png")
+boxplot(ils_nug14, ts_nug14, ga_nug14, ss_nug14, main=toupper("Nug14"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug15
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug15.png")
+boxplot(ils_nug15, ts_nug15, ga_nug15, ss_nug15, main=toupper("Nug15"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug16a
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug16a.png")
+boxplot(ils_nug16a, ts_nug16a, ga_nug16a, ss_nug16a, main=toupper("Nug16a"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug16b
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug16b.png")
+boxplot(ils_nug16b, ts_nug16b, ga_nug16b, ss_nug16b, main=toupper("Nug16b"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug17
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug17.png")
+boxplot(ils_nug17, ts_nug17, ga_nug17, ss_nug17, main=toupper("Nug17"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug18
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug18.png")
+boxplot(ils_nug18, ts_nug18, ga_nug18, ss_nug18, main=toupper("Nug18"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug20
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug20.png")
+boxplot(ils_nug20, ts_nug20, ga_nug20, ss_nug20, main=toupper("Nug20"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug21
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug21.png")
+boxplot(ils_nug21, ts_nug21, ga_nug21, ss_nug21, main=toupper("Nug21"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug22
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug22.png")
+boxplot(ils_nug22, ts_nug22, ga_nug22, ss_nug22, main=toupper("Nug22"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug25
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug25.png")
+boxplot(ils_nug25, ts_nug25, ga_nug25, ss_nug25, main=toupper("Nug25"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug27
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug27.png")
+boxplot(ils_nug27, ts_nug27, ga_nug27, ss_nug27, main=toupper("Nug27"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug28
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug28.png")
+boxplot(ils_nug28, ts_nug28, ga_nug28, ss_nug28, main=toupper("Nug28"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()
+#nug30
+png(filename="/home/lfernandes/Algorithm-Design-II/statistics/time_boxplots/nug30.png")
+boxplot(ils_nug30, ts_nug30, ga_nug30, ss_nug30, main=toupper("Nug30"), ylab="Solution Value", xlab="Metaheuristic", names=c("ILS", "TS", "GA", "SS"))
+dev.off()

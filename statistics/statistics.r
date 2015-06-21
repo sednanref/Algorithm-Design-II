@@ -523,7 +523,7 @@ print(sd(ts_nug14))
 print("SD de nug14 con GA")
 print(sd(ga_nug14))
 print("SD de nug14 con SS")
-print(sd(ss_nug12))
+print(sd(ss_nug14))
 #nug15
 print("SD de nug15 con ILS")
 print(sd(ils_nug15))

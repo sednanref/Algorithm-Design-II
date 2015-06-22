@@ -49,7 +49,7 @@ Se considera el problema de asignación como un conjunto de ubicaciones, donde s
 
 Entre las aplicaciones que se le pueden atribuir al problema de asignación cuadrática se puede encontrar el diseño de terminales de aeropuertos, en donde se quiere que los pasajeros que deban hacer un transbordo recorran la distancia mínima entre una y otra terminal, teniendo en cuenta el flujo de personas entre ellas, procesos de comunicaciones y diseño de circuitos eléctricos, en donde es de relevante importancia dónde se ubican ciertas partes o chips con el fin de minimizar la distancia entre ellos, ya que las conexiones son de alto costo, entre otras.
 
-El presente artículo está estructurado de la siguiente forma: primero se indicará la formulación matemática propuesta para el problema, luego se especificará un algoritmo de búsqueda local cuyo objetivo es encontrar soluciones mejores hasta quedarse en algún mínimo local, tal búsqueda local dependerá de factores muy fundamentales como son la producción de una solución inicial y la vecindad de soluciones a generar, tales puntos también serán cubiertos; posteriormente, se propondrán dos metaheurísticas que buscan escapar de los mínimos locales que produce el \textit{Local Search} y de esta forma abrir el espacio de búsqueda para encontrar nuevas y mejores soluciones, tales metaheurísticas son las de \textit{Iterated Local Search} y \textit{Tabu Search} su estructura general, componentes principales y detalles de implementación propuesta serán especificados. Finalmente, se expondrán los resultados de las evaluaciones de tales metaheurísticas con su respectivo análisis y de esta forma tomar conclusiones al respecto. 
+El presente artículo está estructurado de la siguiente forma: primero se indicará la formulación matemática propuesta para el problema, luego se especificará un algoritmo de búsqueda local cuyo objetivo es encontrar soluciones mejores hasta quedarse en algún mínimo local, tal búsqueda local dependerá de factores muy fundamentales como son la producción de una solución inicial y la vecindad de soluciones a generar, tales puntos también serán cubiertos; posteriormente, se propondrán dos metaheurísticas que buscan escapar de los mínimos locales que produce el \textit{Local Search} y de esta forma abrir el espacio de búsqueda para encontrar nuevas y mejores soluciones, tales metaheurísticas son las de \textit{Iterated Local Search} y \textit{Tabu Search} su estructura general, componentes principales y detalles de implementación propuesta serán especificados. Posteriormente, se presentarán dos opciones de metaheurísticas poblacionales que son sustancialmente diferentes a las metaheurísticas de trayectoria anteriormente mencionadas. Las metaheurísticas poblacionales escogidas para el presente artículo son \textit{Genetic Algorithm} y \textit{Scatter Search}. Finalmente, se expondrán los resultados de las evaluaciones de tales metaheurísticas con su respectivo análisis y de esta forma tomarán conclusiones al respecto en la última sección. 
 
 \section{Formulación Matemática}
 
@@ -99,15 +99,15 @@ Una de las dos posibles soluciones iniciales a generar la hemos realizado a trav
  \KwIn{n: tamaño de las matrices, F: Matriz de Flujo, L: Matriz de localizaciones}
  \KwOut{S: Solución inicial}
  \For{cada $f_{i}$ $\in$ F}{
- 	$facilidades_{i} \leftarrow$ \textless $f_{i}, flujoTotal(f_{i})$\textgreater\;
+  $facilidades_{i} \leftarrow$ \textless $f_{i}, flujoTotal(f_{i})$\textgreater\;
  }
  ordenarPorFlujoTotal(flujos)\;
  \For{cada $l_{i}$ $\in$ L}{
- 	$localizaciones_{i} \leftarrow$ \textless $l_{i}, distanciaTotal(f_{i})$\textgreater\;
+  $localizaciones_{i} \leftarrow$ \textless $l_{i}, distanciaTotal(f_{i})$\textgreater\;
  }
  ordenarPorDistanciaTotal(localizaciones)\;
  \For{i $\in$ \{1..n\}}{
- 	$S_{facilidades_{n-i}} \leftarrow localizaciones_{i}$\;
+  $S_{facilidades_{n-i}} \leftarrow localizaciones_{i}$\;
  }
  
  
@@ -165,9 +165,9 @@ En nuestro caso hemos implementado un \textit{Iterated Local Search} con caracte
   $S \leftarrow localSearch(S)$\;
 
   \eIf{f(S) \textless f(S*)}{
-   	S* $\leftarrow$ S\;
+    S* $\leftarrow$ S\;
    }{
-   	skip\;
+    skip\;
    }
   S $\leftarrow$ randomSolution()\;
  }
@@ -211,6 +211,52 @@ Nuestro algoritmo tabu evalúa toda la vecindad generada para ver las mejores so
 En el anterior algoritmo el procedimiento mejorSolución() simplemente devuelve la mejor solución del conjunto que le sea pasado como entrada, simplemente retorna aquella solución con menor función de evaluación como es deseable para el problema de asignación cuadrática.
 
 
+\section{Metaheurísticas Poblacionales}
+
+Las metaheurísticas poblacionales también han tomado parte en la resolución de problemas NP-duros, particularmente en QAP se tienen diversas investigaciones de tales metaheurísticas, un buen ejemplo de ellas es la metaheurística de colonias de hormigas, Gambardella et al. en \cite{gambardella} hacen un estudio de tal metaheurística frente a este problema con sus propias aproximaciones y entonaciones de parámetros que parecen dar muy buenos resultados.
+
+Esta familia de metaheurísticas está basada en la idea de combinar múltiples soluciones de distintas formas para hallar nuevos espacios de búsqueda que las metaheurísticas de trayectoria podrían obviar y de esta manera encontrar nuevas soluciones óptimas. En estas metaheurísticas es de relevante importancia la decisión a tomar respecto a la población inicial, cómo será construida y qué tan grande será, también es importante saber qué operador utilizar para la combinación de soluciones, puesto que de tal operador derivará el nuevo espacio de búsqueda para encontrar nuevas soluciones al problema.
+
+A continuación se presentarán dos metaheurísticas poblacionales, una basada en \textit{Genetic Algorithm} y la otra en \textit{Scatter Search}, sus componentes y detalles serán especificados también.
+
+\subsection{Genetic Algorithm}
+
+El algoritmo genético o \textit{Genetic Algorithm} es un algoritmo ampliamente utilizado en la resolución de problemas NP-duros, para el problema de QAP se tienen distintos sabores del mismo pero todos bajo la misma base; esta metaheurística consiste en la generación de un conjunto inicial de soluciones al cual se le conoce como \textit{población}, de esta población se seleccionarán dos soluciones para su posterior "apareamiento" del cual se obtendrán dos nuevas soluciones, estas dos nuevas soluciones reemplazarán a sus dos soluciones padres (al menos para la presente versión de la metaheurística) y se realizará este mismo procedimiento un número determinado de veces, el cual para nuestros efectos se contó con un número de dos mil iteraciones, ya que con este número se lograba obtener en la mayoría de los casos soluciones aceptables, mientras que si se aumentaba no se lograban mayores mejoras.
+
+El hecho de sustituir a las soluciones padres por sus soluciones hijos proviene del hecho de que en el proceso de selección se toma en cuenta un factor importante: a pesar de que la selección es estocástica, ésta está basada en una función de fitness inverso de la forma \(fitness^{-1}(s_{a}) =  \frac{\sum_{s_{i} \in P} F(s_{i})}{F(s_{a})}\) el cual especifica que tan mala es una solución \(s_{a} \in P\) en una población \(P\), dicho esto, tal proceso de selección da una probabilidad de escogencia a cada solución \(S_{i} \in P\) proporcional a su funcional de fitness inverso en la población, lo que da como consecuencia que las peores soluciones siempre tengan una mayor probabilidad de ser seleccionadas, debido a esto, los padres siempre son reemplazados por sus hijos, dado que estos rara vez son peores a sus soluciones padres.
+
+El resto del algoritmo, está basado en un operador de cruce o \textit{crossover} y en un operador de mutación de la población que son descritos por Azarbonyad y Babazadeh en \cite{azar}. 
+
+El operador de cruce o \textit{crossover} para la generación de dos nuevas soluciones \(h_{1}\) y \(h_{2}\) a partir de dos soluciones \(p_{1}\) y \(p_{2}\) consta de tomar dos valores entre \(2\) y \(n - 1\) para fijar los componentes de ese intervalo de la solución \(p_{1}\) en \(h_{1}\), luego, los componentes restantes de \(h1\) se colocarán en el orden que tenga la otra solución padre \(p_{2}\); para la generación de \(h_{2}\) se realiza la operación análoga.
+
+Una forma de explorar y diversificar más en el espacio de búsqueda consta de mutar a la población \(P\), para ello, en cada iteración se escoge cada solución \(s_{i} \in P\) y se muta con una probabilidad de 0.2, este valor debido a que con un valor mayor se podría alterar a la población en una magnitud indeseada (se desestabilizaría la intensificación que se logra con el crossover), con un valor menor tampoco tendría mucho sentido la mutación de la población por que sería despreciable; si la solución es candidata a mutar, simplemente se seleccionan dos de sus componentes de forma completamente aleatoria y se intercambian.
+
+Para efectos de simplicidad, el algoritmo se presenta a continuación de una forma más práctica:
+
+\begin{algorithm}
+ \DontPrintSemicolon
+ \vspace*{0.1cm}
+ %\KwIn{Descripcion}
+ %\KwOut{Descripcion}
+ P $\leftarrow$ generarPoblaciónInicial(size)\;
+ s* $\leftarrow$ mejorSolución(P)\;
+ \While{$\neg$condiciónDeParada()}{
+  $p1, p2 \leftarrow seleccionarPadres(P)$\;
+  $h1, h2 \leftarrow crossover(p1, p2)$\;
+  P $\leftarrow$  actualizarPoblación(P)\;
+  P $\leftarrow$ mutarPoblación(P)\;
+  s $\leftarrow$ mejorSolución(P)\;
+  \eIf{f(s) \textless f(s*)}{
+   s* $\leftarrow$ s\;
+   }{
+    skip\;
+   }
+ }
+ 
+ \KwRet{s*}
+ \vspace*{0.1cm}
+ \caption{Genetic Algorithm}
+\end{algorithm}
 
 \section{Evaluación}
 
@@ -221,7 +267,7 @@ Para el caso de la metaheurística de \textit{Iterated Local Search} fueron nece
 Por otro lado, la metaheurística de \textit{Tabu Search} fue entonada con un número de dos mil iteraciones por ejecución, tal número fue suficiente para conseguir muy buenas soluciones. 
 
 \begin{table}[ht]
-	\label{table:erm}
+  \label{table:erm}
     \caption{Errores Relativos de la Media}
     \centering
     \begin{tabular}{ll|c|c|}
@@ -243,7 +289,7 @@ Por otro lado, la metaheurística de \textit{Tabu Search} fue entonada con un n�
   \multicolumn{1}{|l|}{nug27}              & 5234                              & 0.131                       & \textbf{0.029}             \\ \hline
   \multicolumn{1}{|l|}{nug28}              & 5166                              & 0.134                       & \textbf{0.026}             \\ \hline
   \multicolumn{1}{|l|}{nug30}              & 6124                              & 0.117                       & \textbf{0.025}             \\ \hline
-  	\end{tabular}
+    \end{tabular}
 \end{table}
 
 Como bien muestra el \textit{cuadro 1} \ref{table:erm}, fueron calculados para cada instancia (y bajo cada metaheurística) el error relativo de la media, con el cual se puede apreciar que tan alejado estuvo la media de las soluciones obtenidas con cada metaheurística, En tal cuadro se puede observar como la media de las soluciones obtenidas con \textit{Iterated Local Search} son cada vez más alejadas de la solución óptima a medida que crece el \(n\), sin embargo esto no sucede para el \textit{Tabu Search}, de hecho, se comporta de forma bastante estable con respecto a la media de la solución obtenida sin importar el tamaño \(n\) que tenga la instancia, ni siquiera en la instancia de \textit{nug30} se excede el error relativo del tres porciento. 
@@ -253,10 +299,10 @@ El \textit{Iterated Local Search} encontró el óptimo global en casi todas las 
 En el \textit{cuadro 2} \ref{table:sd} se muestran las desviaciones estándar de cada instancia bajo cada metaheurística de trayectoria según las soluciones obtenidas, y algo realmente sorprendente que se puede observar tanto en tal tabla como en los boxplots del apéndice es que la desviación estándar del \textit{Iterated Local Search} es siempre menor a la desviación estándar del \textit{Tabu Search}, al ver esto indagamos el por qué de tales resultados y caímos en cuenta de que en muchas oportunidades (sin importar la instancia) el \textit{Iterated Local Search} se queda con la solución obtenida tras aplicar \textit{Búsqueda Local} sobre la solución inicial \textit{Greedy} propuesta en al inicio del artículo, tal comportamiento del \textit{Iterated Local Search} hace que la desviación estándar sea más pequeña, pero no permite buscar (en muchos casos) muy buenas soluciones a pesar de su comportamiento de exploración bastante variado al empezar nuevamente con soluciones generadas aleatoriamente.
 
 \begin{table}[ht]
-	\label{table:sd}
+  \label{table:sd}
     \caption{Desviaciones Estándar}
     \centering
-	\begin{tabular}{l|c|c|}
+  \begin{tabular}{l|c|c|}
 \cline{2-3}
                                       & \multicolumn{2}{c|}{{\bf Desviación Estándar}} \\ \hline
 \multicolumn{1}{|l|}{{\bf Instancia}} & {\bf ILS}                & {\bf TS}            \\ \hline
@@ -283,24 +329,24 @@ En el \textit{cuadro 2} \ref{table:sd} se muestran las desviaciones estándar de
 \begin{table}[ht]
 \centering
 \caption{Tabla de comparación de tiempos (en segundos)}
-\label{my-label}
+\label{table:time}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-{\bf Instancia} & {\bf ILS} & {\bf TS} & {\bf GA} & {\bf SS} \\ \hline
-nug12           & 18.7      & 0.52     & 8.78     & 0.31     \\ \hline
-nug14           & 29.9      & 0.85     & 15.3     & 0.61     \\ \hline
-nug15           & 38.1      & 1.08     & 19.8     & 0.77     \\ \hline
-nug16a          & 50.4      & 1.36     & 25.2     & 1.10     \\ \hline
-nug16b          & 47.5      & 1.36     & 25.2     & 1.10     \\ \hline
-nug17           & 54.0      & 1.68     & 31.6     & 1.35     \\ \hline
-nug18           & 69.9      & 2.05     & 39.3     & 1.86     \\ \hline
-nug20           & 110       & 2.98     & 58.9     & 2.99     \\ \hline
-nug21           & 139       & 3.57     & 71.5     & 3.56     \\ \hline
-nug22           & 144       & 4.20     & 86.0     & 4.63     \\ \hline
-nug25           & 257       & 6.84     & 145      & 8.13     \\ \hline
-nug27           & 263       & 9.01     & 200      & 11.7     \\ \hline
-nug28           & 309       & 10.3     & 233      & 14.4     \\ \hline
-nug30           & 579       & 13.5     & 309      &          \\ \hline
+{\bf Instancia} & {\bf ILS} & {\bf TS}   & {\bf GA} & {\bf SS}   \\ \hline
+nug12           & 18.7      & 0.52       & 8.78     & {\bf 0.31} \\ \hline
+nug14           & 29.9      & 0.85       & 15.3     & {\bf 0.61} \\ \hline
+nug15           & 38.1      & 1.08       & 19.8     & {\bf 0.77} \\ \hline
+nug16a          & 50.4      & 1.36       & 25.2     & {\bf 1.10} \\ \hline
+nug16b          & 47.5      & 1.36       & 25.2     & {\bf 1.10} \\ \hline
+nug17           & 54.0      & 1.68       & 31.6     & {\bf 1.35} \\ \hline
+nug18           & 69.9      & 2.05       & 39.3     & {\bf 1.86} \\ \hline
+nug20           & 110       & {\bf 2.98} & 58.9     & 2.99       \\ \hline
+nug21           & 139       & 3.57       & 71.5     & {\bf 3.56} \\ \hline
+nug22           & 144       & {\bf 4.20} & 86.0     & 4.63       \\ \hline
+nug25           & 257       & {\bf 6.84} & 145      & 8.13       \\ \hline
+nug27           & 263       & {\bf 9.01} & 200      & 11.7       \\ \hline
+nug28           & 309       & {\bf 10.3} & 233      & 14.4       \\ \hline
+nug30           & 579       & {\bf 13.5} & 309      & 20.1       \\ \hline
 \end{tabular}
 \end{table}
 
@@ -314,19 +360,33 @@ nug30           & 579       & 13.5     & 309      &          \\ \hline
 % The entries should be in alphabetical order
 \small
 \bibliographystyle{abbrv}
-
+ 
 \begin{thebibliography}{99}
+
+\bibitem{azar}
+H. Azarbonyad and R. Babazadeh
+\newblock A Genetic Algorithm for Solving Quadratic Assignment Problem.
+\newblock {\em University of Tehran, Iran}.
 
 \bibitem{burkard2012}
 R.E. Burkard, E. Çela, S.E. Karisch and F. Rendl.
 \newblock QAPLIB - A Quadratic Assignment Problem Library.
 \newblock 2012.
 
+\bibitem{cung1996}
+V.D. Cung, T. Mautor, P. Michelon and 
+\newblock Robust Taboo Search for the Quadratic Assignment Problem.
+\newblock {\em Rapports de Recherche} 96/037, 1996.
+
+\bibitem{gambardella}
+L. M. Gambardella, É. D. Taillard and M. Dorigo
+\newblock Ant Colonies for the Quadratic Assignment Problem
+\newblock {\em IRIDIA - CP. Université Libre de Bruxelles.} 194/6.
+
 \bibitem{ghandeshtani2010}
 K. S. Ghandeshtani, N. Mollai, M. M. Neshati and S. M. H. Seyedkashi.
 \newblock New Simulated Annealing for Quadratic Assignment Problem.
 \newblock {\em The Fourth International Conference on Advanced Engineering and Aplications in Science.}, 2010.
-
 
 \bibitem{koopmans1957}
 T. C. Koopmans and M. J. Beckmann. 
@@ -364,127 +424,109 @@ E. Taillard
 \section*{Apéndice}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug12}
-	\includegraphics[scale=0.5]{nug12}
+  \caption{Boxplots de las Soluciones para la instancia Nug12}
+  \includegraphics[scale=0.5]{nug12}
     \centering
     \label{fig:boxplot_nug12}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug14}
-	\includegraphics[scale=0.5]{nug14}
+  \caption{Boxplots de las Soluciones para la instancia Nug14}
+  \includegraphics[scale=0.5]{nug14}
     \centering
     \label{fig:boxplot_nug14}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug15}
-	\includegraphics[scale=0.5]{nug15}
+  \caption{Boxplots de las Soluciones para la instancia Nug15}
+  \includegraphics[scale=0.5]{nug15}
     \centering
     \label{fig:boxplot_nug15}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug16a}
-	\includegraphics[scale=0.5]{nug16a}
+  \caption{Boxplots de las Soluciones para la instancia Nug16a}
+  \includegraphics[scale=0.5]{nug16a}
     \centering
     \label{fig:boxplot_nug16a}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug16b}
-	\includegraphics[scale=0.5]{nug16b}
+  \caption{Boxplots de las Soluciones para la instancia Nug16b}
+  \includegraphics[scale=0.5]{nug16b}
     \centering
     \label{fig:boxplot_nug16b}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug17}
-	\includegraphics[scale=0.5]{nug17}
+  \caption{Boxplots de las Soluciones para la instancia Nug17}
+  \includegraphics[scale=0.5]{nug17}
     \centering
     \label{fig:boxplot_nug17}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug18}
-	\includegraphics[scale=0.5]{nug18}
+  \caption{Boxplots de las Soluciones para la instancia Nug18}
+  \includegraphics[scale=0.5]{nug18}
     \centering
     \label{fig:boxplot_nug18}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug20}
-	\includegraphics[scale=0.5]{nug20}
+  \caption{Boxplots de las Soluciones para la instancia Nug20}
+  \includegraphics[scale=0.5]{nug20}
     \centering
     \label{fig:boxplot_nug20}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug21}
-	\includegraphics[scale=0.5]{nug21}
+  \caption{Boxplots de las Soluciones para la instancia Nug21}
+  \includegraphics[scale=0.5]{nug21}
     \centering
     \label{fig:boxplot_nug21}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug22}
-	\includegraphics[scale=0.5]{nug22}
+  \caption{Boxplots de las Soluciones para la instancia Nug22}
+  \includegraphics[scale=0.5]{nug22}
     \centering
     \label{fig:boxplot_nug22}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug24}
-	\includegraphics[scale=0.5]{nug24}
+  \caption{Boxplots de las Soluciones para la instancia Nug24}
+  \includegraphics[scale=0.5]{nug24}
     \centering
     \label{fig:boxplot_nug24}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug25}
-	\includegraphics[scale=0.5]{nug25}
+  \caption{Boxplots de las Soluciones para la instancia Nug25}
+  \includegraphics[scale=0.5]{nug25}
     \centering
     \label{fig:boxplot_nug25}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug27}
-	\includegraphics[scale=0.5]{nug27}
+  \caption{Boxplots de las Soluciones para la instancia Nug27}
+  \includegraphics[scale=0.5]{nug27}
     \centering
     \label{fig:boxplot_nug27}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug28}
-	\includegraphics[scale=0.5]{nug28}
+  \caption{Boxplots de las Soluciones para la instancia Nug28}
+  \includegraphics[scale=0.5]{nug28}
     \centering
     \label{fig:boxplot_nug28}
 \end{figure}
 
 \begin{figure}[ht]
-	\caption{Boxplots de las Soluciones para la instancia Nug30}
-	\includegraphics[scale=0.5]{nug30}
+  \caption{Boxplots de las Soluciones para la instancia Nug30}
+  \includegraphics[scale=0.5]{nug30}
     \centering
     \label{fig:boxplot_nug30}
 \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 \begin{table}[ht]
 \centering

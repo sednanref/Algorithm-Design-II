@@ -238,7 +238,7 @@ Para efectos de simplicidad, el algoritmo se presenta a continuación de una for
  \vspace*{0.1cm}
  %\KwIn{Descripcion}
  %\KwOut{Descripcion}
- P $\leftarrow$ generarPoblaciónInicial(size)\;
+ P $\leftarrow$ generarPoblaciónInicial(tam)\;
  s* $\leftarrow$ mejorSolución(P)\;
  \While{$\neg$condiciónDeParada()}{
   $p1, p2 \leftarrow seleccionarPadres(P)$\;
@@ -258,13 +258,60 @@ Para efectos de simplicidad, el algoritmo se presenta a continuación de una for
  \caption{Genetic Algorithm}
 \end{algorithm}
 
+En el anterior algoritmo el procedimiento de \(generarPoblacionInicial(tam)\) simplemente genera un conjunto de \(tam\) soluciones totalmente aleatorias que conformarán la población inicial, para efectos de nuestra investigación se ha utilizado un \(tam\) de \(n^{3}\) debido a que con este valor de soluciones iniciales se podían obtener soluciones considerables, con tamaños de población inicial inferiores las soluciones halladas por el algoritmo eran bastante deficientes, mientras que con tamaños de orden mayor el tiempo se veía altamente afectado.
+
+\subsection{Scatter Search}
+
+La metaheurística de búsqueda dispersa o \textit{Scatter Search} se basa en la búsqueda de buenas soluciones explorando la combinaciones de soluciones que son muy diferentes entre sí. Para esta metaheurística, al igual que en el algoritmo genético, se comienza con un conjunto de soluciones llamado \textit{población}, el cual debe ser lo más \textit{disperso} posible para que las combinación futura de soluciones tenga sentido y se explore de mejor forma el espacio de búsqueda. Para la creación de la población inicial simplemente se genera una solución de manera aleatoria, la generación del resto de la población será generada a través de las \(n - 1\) permutaciones circulares de tal solución, así la población incial tendrá una cardinalidad de tamaño \(n\).
+
+De tal conjunto población se obtienen las mejores soluciones y son almacenadas en orden en un conjunto llamado \textit{conjunto de referencia}, este conjunto mantiene las soluciones que le componen de forma ordenada, es decir, \(Ref = \{s_{1}, s_{2}, ..., s_{b}\}\) donde \(b\) es el tamaño del conjunto de referencia y la evaluación de la función objetivo de \(s_{1}\) es la mejor en el conjunto de referencia mientras que la misma evaluación sobre \(s_{b}\) es la peor de dicho conjunto. 
+
+Una vez obtenido este conjunto referencia se genera el conjunto de todos los subconjuntos de pares posibles en el conjunto de referencia, es decir, \(\{\{s_{1}, s_{2}\}, \{s_{1}, s_{3}\},..., \{s_{b-1}, s_{b}\}\}\), luego, para cada par en el conjunto de subconjuntos se realiza un crossover, este crossover es el mismo realizado para el \textit{Algoritmo Genético} de la subsección anterior, luego, para cada una de las soluciones resultantes se obtiene su evaluación objetivo, y si dicha evaluación es mejor a la de \(s_{b}\), se reemplaza \(s_{b}\) por tal solución en el conjunto de referencia y se ordena nuevamente. De esta manera, cuando ya no sea posible generar soluciones mejores a través de las combinaciones de las soluciones del conjunto de referencia, se tiene que la mejor solución será la primera del conjunto de referencia, es decir, \(s_{1}\).
+
+
+Es importante indicar que, como indican Cung et al en \cite{cung1996}, esta metaheurística obtiene tan buenas soluciones como su conjunto de referencia lo sea. Por tal razón, para cada solución del conjunto de referencia se les es aplicado un \textit{Tabu Search}, de esta forma se garantizan mejores soluciones en el conjunto de referencia, luego, las combinaciones de estas soluciones en el conjunto de referencia solo pueden ser mejores a aquellas que se les ha realizado una búsqueda tabu para ser consideradas en el conjunto de referencia. Es importante señalar, que para cada \textit{Tabu Search} ejecutado para esta metaheurística, las iteraciones fueron reducidas a doscientos para evitar que la metaheurística global se enfoque en la realización de esta otra y también para evitar descompensaciones notables de tiempo. El algoritmo implementado se muestra a continuación.
+
+
+
+\begin{algorithm}
+ \DontPrintSemicolon
+ \vspace*{0.1cm}
+ %\KwIn{Descripcion}
+ %\KwOut{Descripcion}
+ P $\leftarrow$ generarPoblaciónInicial(tam)\;
+ Ref $\leftarrow$ mejoresSoluciones(P, tamRef)\;
+ Ref $\leftarrow$ ordenar(Ref)\;
+ nuevasSoluciones $\leftarrow$ true\; 
+ \While{nuevasSoluciones}{
+  Subsets $\leftarrow$ subconjuntos(Ref)\;
+  newSolutions $\leftarrow$ false\;
+  \While{Subsets $\neq$ \O}{
+    $s_{a}$ $\leftarrow$ next(Subsets)\;
+    x $\leftarrow$ crossover($s_{a1}, s_{a2}$)\;
+  \eIf{f(x) \textless f(last(Ref))}{
+      last(Ref) $\leftarrow$ x\;
+        ordenar(Ref)\;
+        nuevasSoluciones $\leftarrow$ true\;
+   }{
+    skip\;
+   }
+  }
+ }
+ 
+ \KwRet{first(Ref)}
+ \vspace*{0.1cm}
+ \caption{Scatter Search}
+\end{algorithm}
+
+En el presente algoritmo, el procedimiento de \textit{generarPoblaciónInicial(tam)} indica la generación de la población inicial, en el cual tam representa que se generará \(tam*n\) soluciones iniciales, para nuestro enfoque \(tam\) es 1, dado que la población fue generada a partir de una solución aleatoria y sus respectivas permutaciones circulares, sin embargo, de quererse una población mayor, se puede escogeer un \(tam\) mayor, con lo que se generarían \(tam\) soluciones aleatorias y posteriormente sus \(n - 1\) permutaciones circulares para completar la población dispersa. La condición de para viene dada por el booleano \textit{nuevasSoluciones} que no es más que una bandera de control que indica si alguna solución nueva fue añadida al conjunto de referencia durante la iteración. El esquema general de esta metaheurística fue basado en el propuesto por Fred Glover y Gary A. Kochenberger en \cite{glover}.
+
 \section{Evaluación}
 
 Para la evaluación de las metaheurísticas se ha utilizado una máquina virtual que está provista de 6Gbs de memoria ram y posee dos CPUs de 2GHz bajo una arquitectura de 64bits. Para la evaluación de las metaheurísticas se realizaron treinta ejecuciones de cada metaheurística sobre cada instancia de problema del conjunto de instancias de C.E. Nugent, T.E. Vollmann and J. Ruml, tales instancias se pueden conseguir en Burkard et al. \cite{burkard2012}, tales instancias poseen el sufijo \textit{nug} y el postfijo \(n\), donde tal \(n\) representa el tamaño de la instancia.
 
 Para el caso de la metaheurística de \textit{Iterated Local Search} fueron necesarias cerca de unas veinte mil iteraciones, con la condición adicional de parar en caso de no encontrar una mejor solución en dos mil iteraciones, este número de iteraciones fue el utilizado debido a que con números menores las soluciones pocas veces lograban encontrar mejores soluciones a la conseguida por el \textit{Local Search} sobre la solución inicial obtenida por el algoritmo \textit{Greedy} propuesto.
 
-Por otro lado, la metaheurística de \textit{Tabu Search} fue entonada con un número de dos mil iteraciones por ejecución, tal número fue suficiente para conseguir muy buenas soluciones. 
+Por otro lado, la metaheurística de \textit{Tabu Search} fue entonada con un número de dos mil iteraciones por ejecución, tal número fue suficiente para conseguir muy buenas soluciones.
 
 \begin{table}[ht]
   \label{table:erm}
@@ -324,7 +371,12 @@ En el \textit{cuadro 2} \ref{table:sd} se muestran las desviaciones estándar de
 \end{tabular}
 \end{table}
 
-\section*{Conclusiones}
+Con respecto a las metaheurísticas poblacionales, se puede observar según la \textit{Tabla General} \ref{table:general} como la metaheurística de \textit{Genetic Algorithm} resulta un tanto buena para instancias pequeñas, pero a medida que el tamaño de las instancias son de mayor tamaño, mayor es su error relativo de la media, es decir, las soluciones que obtiene son cada vez más alejadas del óptimo, este comportamiento es bastante parecido al demostrado por el \textit{Iterative Local Search} y se puede apreciar su comportamiento con más detalle en los boxplots presentados en el apéndice del presente documento. Este algoritmo genético a pesar de la entonación prestada entre variantes como la población inicial o el coeficiente de mutación sigue siendo la metaheurística que menos se acopla al problema de QAP, dado que la última metaheurística de \textit{Scatter Search} presenta resultados totalmente distintos.
+
+La metaheurística de \textit{Scatter Search} presenta las mejores soluciones para cada instancia como lo muestra la tabla general situada en el apéndice del presente artículo, esta metaheurística demuestra ser bastante estable, incluso más que la \textit{Tabu Search}, ya que se puede observar como el error relativo de su media se mantiene por debajo de \(0.01\) para la gran mayoría de las instancias, tal valor es únicamente superado en la instancia de \textit{nug28} y sobrepasa tal cantidad de forma muy ligera, su estable comportamiento también puede ser bien apreciado a través de los boxplots situados en el apéndice.
+
+Con respecto a los tiempos, el \textit{Cuadro 3} \ref{table:time} muestra cómo se desempeñan las metaheurísticas al encontrar las mejores soluciones que han obtenido. Para las metaheurísticas de \textit{Iterative Local Search} y \textit{Genetic Algorithm} los tiempos son desalentadores con respecto a los de \textit{Tabu Search} y \textit{Scatter Search}, mientras que estas dos últimas presentan una competencia bastante buena en los tiempos, para las instancias de menor tamaño el \textit{Scatter Search} es quien muestra el mejor promedio en tiempo, mientras que el \textit{Tabu Search} hace lo mismo para las instancias más grandes, sin embargo, el crecimiento en tiempo del \textit{Scatter Search} en función del tamaño de las instancias parece ser más pronunciado que para el \textit{Tabu Search}, aún así las diferencias entre ambas metaheurísticas (al menos para estas instancias) es poco resaltante.
+
 
 \begin{table}[ht]
 \centering
@@ -350,7 +402,11 @@ nug30           & 579       & {\bf 13.5} & 309      & 20.1       \\ \hline
 \end{tabular}
 \end{table}
 
+\newpage
 
+\section*{Conclusiones}
+
+Una ves obtenidos los resultados de las metaheurísticas para las pruebas de eficacia para encontrar buenas soluciones y los tiempos en el que éstas las consiguen, hemos podido concluir que el mejor enfoque que se le puede dar al problema de QAP entre las metaheurísticas propuestas es el enfoque propuesto por \textit{Scatter Search} que busca obtener la combinación de buenas soluciones dispersas para hallar mejores soluciones aún, sin embargo, es importante destacar el protagonismo que ha tenido el \textit{Tabu Search} para esto, pues ha permitido obtener en el conjunto de referencia soluciones bastante prometedoras a combinar, aún cuando el \textit{Tabu Search} enbebido es más ligero en el número de iteraciones que aquel apartado también propuesto y que ha demostrado también ser bastante bueno aún solo. Creemos que sería bastante promisorio ver otras posibles combinaciones y entonaciones que se pueden dar sobre estas dos metaheurísticas que tan bien se comportan juntas frente a QAP. En contraparte, las metaheurísticas que dieron por mucho los peores resultados, díganse \textit{Iterative Local Search} y \textit{Genetic Algorithm} sería interesante probar otras variantes de los mismos, ya que seguramente habrán algunas que se comporten mucho mejor. Tras los resultados obtenidos sospechamos en que el operador de vecindad propuesto para el \textit{Local Search} de \textit{ILS} no es muy bueno, mientras que para \textit{Genetic Algorithm} los malos resultados pueden ser dados por el criterio de selección y sustitución en la población escogidos.
 %
 %Aquí debe estar la conclusión
 
@@ -374,8 +430,8 @@ R.E. Burkard, E. Çela, S.E. Karisch and F. Rendl.
 \newblock 2012.
 
 \bibitem{cung1996}
-V.D. Cung, T. Mautor, P. Michelon and 
-\newblock Robust Taboo Search for the Quadratic Assignment Problem.
+V.D. Cung, T. Mautor, P. Michelon and A. Tavares
+\newblock A Scatter Search Based Approach 
 \newblock {\em Rapports de Recherche} 96/037, 1996.
 
 \bibitem{gambardella}
@@ -387,6 +443,11 @@ L. M. Gambardella, É. D. Taillard and M. Dorigo
 K. S. Ghandeshtani, N. Mollai, M. M. Neshati and S. M. H. Seyedkashi.
 \newblock New Simulated Annealing for Quadratic Assignment Problem.
 \newblock {\em The Fourth International Conference on Advanced Engineering and Aplications in Science.}, 2010.
+
+\bibitem{glover}
+Fred Glover and Gary A. Kochenberger.
+\newblock Handbook of Metaheuristics
+\newblock {\em Kluwer Academic Publishers.}, 2003.
 
 \bibitem{koopmans1957}
 T. C. Koopmans and M. J. Beckmann. 
@@ -528,10 +589,13 @@ E. Taillard
     \label{fig:boxplot_nug30}
 \end{figure}
 
-\begin{table}[ht]
+
+
+\begin{table*}[ht]
 \centering
 \caption{Tabla General}
-\label{my-label}
+\label{table:general}
+\resizebox{18cm}{!}{
 \begin{tabular}{l|l|l|l|l|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \cline{2-21}
                                       & \multicolumn{5}{c|}{ILS}                 & \multicolumn{5}{c|}{TS}            & \multicolumn{5}{c|}{GA}            & \multicolumn{5}{c|}{SS}                  \\ \hline
@@ -552,7 +616,8 @@ E. Taillard
 \multicolumn{1}{|l|}{nug28}           & 5768 & 5860  & 5922 & 36.4 & 0.134       & 5190 & 5301  & 5408 & 58.5 & 0.026 & 5798 & 5926  & 5988 & 45.4 & 0.147 & 5166 & 5224  & 5266 & 24.3 & {\bf 0.011} \\ \hline
 \multicolumn{1}{|l|}{nug30}           & 6688 & 6846  & 6914 & 49.2 & 0.117       & 6156 & 6283  & 6490 & 83.4 & 0.025 & 6880 & 7059  & 7140 & 48.7 & 0.152 & 6148 & 6185  & 6242 & 22.1 & {\bf 0.009} \\ \hline
 \end{tabular}
-\end{table}
+}
+\end{table*}
 
 %
 %Bla.
